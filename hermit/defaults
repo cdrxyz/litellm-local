@@ -1,0 +1,4 @@
+# Hermit package selections for litellm-local
+# Managed by: hermit install python@3
+
+python@3 = {}

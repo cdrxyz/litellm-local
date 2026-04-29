@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Activate Hermit environment for litellm-local.
+#
+# Source this file to activate the Hermit environment:
+#   source bin/activate
+#
+# Or let Hermit auto-activate via the shell hook.
+set -euo pipefail
+
+HERMIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Bootstrap Hermit if not already installed
+if [ ! -x "${HERMIT_ROOT}/bin/hermit" ]; then
+  echo "Bootstrapping Hermit..."
+  curl -fsSL https://github.com/cashapp/hermit/releases/download/v0.52.1/hermit-darwin-arm64 -o "${HERMIT_ROOT}/bin/hermit"
+  chmod +x "${HERMIT_ROOT}/bin/hermit"
+fi
+
+# Activate the environment
+eval "$("${HERMIT_ROOT}/bin/hermit" activate "${HERMIT_ROOT}")"
+
+echo "Hermit environment activated. Python: $(which python3 2>/dev/null || echo 'not found — run: hermit install python@3')"

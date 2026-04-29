@@ -1,0 +1,47 @@
+# LiteLLM Proxy Configuration for LM Studio
+# https://docs.litellm.ai/docs/providers/lm_studio
+#
+# This config exposes local LM Studio models through an OpenAI-compatible
+# API on http://localhost:4000 — perfect for Claude Code / Conductor.
+#
+# Usage:
+#   litellm --config config.yaml
+#
+# LM Studio must be running with its local server enabled
+# (default: http://localhost:1234/v1)
+
+model_list:
+  # ── Add your loaded LM Studio models here ──────────────────────────
+  # The model_name is what Claude Code / Conductor will use.
+  # The litellm_params.model must be prefixed with "lm_studio/" and
+  # match the model identifier shown in LM Studio.
+
+  - model_name: local-default
+    litellm_params:
+      model: lm_studio/local-default   # Change to your model name in LM Studio
+      api_base: http://localhost:1234/v1
+      api_key: ""                       # LM Studio doesn't require a key
+
+  # ── Example: Qwen 2.5 Coder ────────────────────────────────────────
+  # - model_name: qwen-coder
+  #   litellm_params:
+  #     model: lm_studio/qwen2.5-coder-7b-instruct
+  #     api_base: http://localhost:1234/v1
+  #     api_key: ""
+
+  # ── Example: Llama 3.1 ─────────────────────────────────────────────
+  # - model_name: llama
+  #   litellm_params:
+  #     model: lm_studio/llama-3.1-8b-instruct
+  #     api_base: http://localhost:1234/v1
+  #     api_key: ""
+
+litellm_settings:
+  # Drop requests if LM Studio is not running (fail fast vs. queue)
+  drop_requests: true
+  # Request timeout in seconds — local models can be slow on first prompt
+  request_timeout: 300
+
+general_settings:
+  # No master key needed for local-only usage
+  # master_key: sk-local-dev

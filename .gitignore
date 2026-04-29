@@ -1,0 +1,21 @@
+# Hermit
+.hermit/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+logs/*.log
+logs/*.err
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
