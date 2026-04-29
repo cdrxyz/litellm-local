@@ -19,25 +19,25 @@ setup: hermit-install pip-install
 # Install Python via Hermit (idempotent)
 hermit-install:
     @echo "Installing Python via Hermit..."
-    source bin/activate && hermit install python@3
+    ./bin/hermit install python3@3
 
 # Install Python dependencies into a venv
 pip-install:
     @echo "Installing Python dependencies..."
-    source bin/activate
-    python3 -m venv .venv
-    .venv/bin/pip install --quiet --upgrade pip
-    .venv/bin/pip install --quiet -r requirements.txt
+    ./bin/python3 -m venv .venv
+    ./.venv/bin/pip install --quiet --upgrade pip
+    ./.venv/bin/pip install --quiet -r requirements.txt
 
 # ── Proxy ──────────────────────────────────────────────────────────────
 
 # Start the LiteLLM proxy server (foreground)
 start:
-    source bin/activate && .venv/bin/litellm --config config.yaml
+    ./.venv/bin/litellm --config config.yaml
 
 # Start the proxy in the background
 start-bg:
-    source bin/activate && .venv/bin/litellm --config config.yaml &; echo "LiteLLM proxy started on http://localhost:4000"
+    @mkdir -p logs
+    @./.venv/bin/litellm --config config.yaml >> logs/litellm-proxy.log 2>> logs/litellm-proxy.err & echo "LiteLLM proxy started on http://localhost:4000"
 
 # Stop a background proxy
 stop:
@@ -51,7 +51,8 @@ status:
 
 # Install the LaunchAgent for auto-start at login
 install-launchd:
-    @sed "s|{{REPO_DIR}}|$(pwd)|g" launchd/com.cdrxyz.litellm-local.plist > ~/Library/LaunchAgents/com.cdrxyz.litellm-local.plist
+    @mkdir -p ~/Library/LaunchAgents
+    @REPO_DIR="$(pwd)" perl -pe 's/\{\{REPO_DIR\}\}/$ENV{REPO_DIR}/g' launchd/com.cdrxyz.litellm-local.plist > ~/Library/LaunchAgents/com.cdrxyz.litellm-local.plist
     @launchctl load ~/Library/LaunchAgents/com.cdrxyz.litellm-local.plist 2>/dev/null || true
     @echo "✓ LaunchAgent installed. Proxy will start at login."
 

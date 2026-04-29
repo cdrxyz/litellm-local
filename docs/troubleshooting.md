@@ -139,5 +139,5 @@ Hermit's Python packages can be large. If the download fails:
 ```bash
 # Clear Hermit cache and retry
 rm -rf ~/.cache/hermit
-hermit install python@3
+hermit install python3@3
 ```
