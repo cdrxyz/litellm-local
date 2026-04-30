@@ -19,12 +19,13 @@ setup: hermit-install pip-install
 # Install Python via Hermit (idempotent)
 hermit-install:
     @echo "Installing Python via Hermit..."
-    ./bin/hermit install python3@3
+    ./bin/hermit install python3@3.13
 
 # Install Python dependencies into a venv
 pip-install:
     @echo "Installing Python dependencies..."
-    ./bin/python3 -m venv .venv
+    @test -x .venv/bin/python && ./.venv/bin/python -c 'import sys; raise SystemExit(sys.version_info[:2] != (3, 13))' || rm -rf .venv
+    @test -d .venv || ./bin/python3 -m venv .venv
     ./.venv/bin/pip install --quiet --upgrade pip
     ./.venv/bin/pip install --quiet -r requirements.txt
 
